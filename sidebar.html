@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <style>
+      .logo { vertical-align: middle; }
+      ul { list-style-type: none; padding: 0; }
+      h4 { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <form class="sidebar branding-below">
+      <div class="block" id="button-bar">
+        <button class="blue" id="run-copy">Copy</button>
+      </div>
+      <h5 class="error" id="error"></h5>
+    </form>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      $(function() {
+        $('#run-copy').click(runCopy);
+      });
+
+      function runCopy() {
+        this.disabled = true;
+        $('#error').text('');
+        google.script.run
+            .withSuccessHandler(function(numCopiedSlides, element) {
+              element.disabled = false;
+              if (numCopiedSlides === 0) {
+                $('#error').empty()
+                    .append('No slides copied:-(')
+                    .append('<br/>');
+              }
+              return false;
+             })
+            .withFailureHandler(function(msg, element) {
+              element.disabled = false;
+              $('#error').text('Something went wrong. Please check the add-on logs.')
+                  .append(msg);
+              return false;
+            })
+            .withUserObject(this)
+            .copyDeck();
+      };
+    </script>
+  </body>
+</html>
